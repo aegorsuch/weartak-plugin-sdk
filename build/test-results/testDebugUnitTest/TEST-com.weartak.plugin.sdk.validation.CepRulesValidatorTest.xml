@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.validation.CepRulesValidatorTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:41" hostname="ghost-pc" time="0.137">
+  <properties/>
+  <testcase name="validateEvent_rejectsRemoveWithJson" classname="com.weartak.plugin.sdk.validation.CepRulesValidatorTest" time="0.017"/>
+  <testcase name="registrationValid" classname="com.weartak.plugin.sdk.validation.CepRulesValidatorTest" time="0.016"/>
+  <testcase name="validateEvent_acceptsAdd" classname="com.weartak.plugin.sdk.validation.CepRulesValidatorTest" time="0.016"/>
+  <testcase name="validateRegistration_rejectsNonJsonObject" classname="com.weartak.plugin.sdk.validation.CepRulesValidatorTest" time="0.016"/>
+  <testcase name="validateRegistration_rejectsBlankPluginId" classname="com.weartak.plugin.sdk.validation.CepRulesValidatorTest" time="0.016"/>
+  <testcase name="validateRegistration_rejectsBlankSensorKey" classname="com.weartak.plugin.sdk.validation.CepRulesValidatorTest" time="0.019"/>
+  <testcase name="validateRegistration_rejectsOversizedJson" classname="com.weartak.plugin.sdk.validation.CepRulesValidatorTest" time="0.018"/>
+  <testcase name="validateEvent_rejectsBlankRuleSetId" classname="com.weartak.plugin.sdk.validation.CepRulesValidatorTest" time="0.017"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

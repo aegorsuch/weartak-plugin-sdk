@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.binder.PluginRulesAssetLoaderTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:40" hostname="ghost-pc" time="0.001">
+  <properties/>
+  <testcase name="loadFromStream_readsUtf8Payload" classname="com.weartak.plugin.sdk.binder.PluginRulesAssetLoaderTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

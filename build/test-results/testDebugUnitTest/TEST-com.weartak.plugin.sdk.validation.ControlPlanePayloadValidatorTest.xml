@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.validation.ControlPlanePayloadValidatorTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:41" hostname="ghost-pc" time="0.139">
+  <properties/>
+  <testcase name="validateToast_rejectsBlankMessage" classname="com.weartak.plugin.sdk.validation.ControlPlanePayloadValidatorTest" time="0.015"/>
+  <testcase name="validateAlert_rejectsBlankTitle" classname="com.weartak.plugin.sdk.validation.ControlPlanePayloadValidatorTest" time="0.016"/>
+  <testcase name="validateAlert_truncatesLongStrings" classname="com.weartak.plugin.sdk.validation.ControlPlanePayloadValidatorTest" time="0.022"/>
+  <testcase name="validateToast_truncatesLongStrings" classname="com.weartak.plugin.sdk.validation.ControlPlanePayloadValidatorTest" time="0.017"/>
+  <testcase name="validateMarker_rejectsBlankMarkerId" classname="com.weartak.plugin.sdk.validation.ControlPlanePayloadValidatorTest" time="0.016"/>
+  <testcase name="validateMarker_truncatesLongMarkerId" classname="com.weartak.plugin.sdk.validation.ControlPlanePayloadValidatorTest" time="0.017"/>
+  <testcase name="validateToast_clampsUnknownDuration" classname="com.weartak.plugin.sdk.validation.ControlPlanePayloadValidatorTest" time="0.017"/>
+  <testcase name="validateAlert_rejectsBlankMessage" classname="com.weartak.plugin.sdk.validation.ControlPlanePayloadValidatorTest" time="0.019"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

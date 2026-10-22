@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.v2.V2CompatibilityMatrixTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:40" hostname="ghost-pc" time="0.053">
+  <properties/>
+  <testcase name="cell2_v1Plugin_v2Host_v2HelpersRejectWrongContractVersion" classname="com.weartak.plugin.sdk.v2.V2CompatibilityMatrixTest" time="0.02"/>
+  <testcase name="cell4_v2Plugin_v2Host_syncPathAvailable" classname="com.weartak.plugin.sdk.v2.V2CompatibilityMatrixTest" time="0.016"/>
+  <testcase name="cell3_v2Plugin_v1Host_v2ControlUnavailable" classname="com.weartak.plugin.sdk.v2.V2CompatibilityMatrixTest" time="0.017"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

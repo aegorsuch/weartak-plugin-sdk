@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.binder.PluginBinderGuardTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:39" hostname="ghost-pc" time="0.105">
+  <properties/>
+  <testcase name="command_invokesOnShutdownWhenBlocked" classname="com.weartak.plugin.sdk.binder.PluginBinderGuardTest" time="0.029"/>
+  <testcase name="query_returnsFallbackAfterShutdown" classname="com.weartak.plugin.sdk.binder.PluginBinderGuardTest" time="0.025"/>
+  <testcase name="command_runsWhileActive_andStopsAfterShutdown" classname="com.weartak.plugin.sdk.binder.PluginBinderGuardTest" time="0.024"/>
+  <testcase name="query_invokesOnShutdownWhenBlocked" classname="com.weartak.plugin.sdk.binder.PluginBinderGuardTest" time="0.026"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

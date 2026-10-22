@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.validation.ConditionGrammarTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:41" hostname="ghost-pc" time="0.003">
+  <properties/>
+  <testcase name="parse_rejectsWhitespaceInKey" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.001"/>
+  <testcase name="parse_rejectsWhitespaceInLiteral" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <testcase name="parse_neFalse" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.001"/>
+  <testcase name="isValidConditionKey_acceptsFieldId" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <testcase name="parse_rejectsCompoundAnd" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <testcase name="parse_rejectsMalformedTripleEquals" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <testcase name="parse_prefersLeftmostOperator" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <testcase name="parse_rejectsEmbeddedOperatorInLiteral" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <testcase name="parse_rejectsParentheses" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <testcase name="parse_rejectsDoubleComparisonTail" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <testcase name="parse_rejectsCompoundOr" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <testcase name="isValidConditionLiteral_acceptsSimpleToken" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <testcase name="parse_eqTrue" classname="com.weartak.plugin.sdk.validation.ConditionGrammarTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

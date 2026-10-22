@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.validation.SettingsSchemaContractValidatorTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:42" hostname="ghost-pc" time="0.004">
+  <properties/>
+  <testcase name="selectField_rejectedWithoutOptions" classname="com.weartak.plugin.sdk.validation.SettingsSchemaContractValidatorTest" time="0.002"/>
+  <testcase name="selectField_acceptedWithOptions" classname="com.weartak.plugin.sdk.validation.SettingsSchemaContractValidatorTest" time="0.001"/>
+  <testcase name="numberField_acceptedInV1x" classname="com.weartak.plugin.sdk.validation.SettingsSchemaContractValidatorTest" time="0.0"/>
+  <testcase name="validSchema_allSupportedFieldTypes" classname="com.weartak.plugin.sdk.validation.SettingsSchemaContractValidatorTest" time="0.0"/>
+  <testcase name="stringField_acceptedInV1x" classname="com.weartak.plugin.sdk.validation.SettingsSchemaContractValidatorTest" time="0.0"/>
+  <testcase name="visibilityConditionParsed" classname="com.weartak.plugin.sdk.validation.SettingsSchemaContractValidatorTest" time="0.001"/>
+  <testcase name="selectField_rejectedDuplicateOptionValues" classname="com.weartak.plugin.sdk.validation.SettingsSchemaContractValidatorTest" time="0.0"/>
+  <testcase name="visibilityCondition_rejectsCompoundLiteral" classname="com.weartak.plugin.sdk.validation.SettingsSchemaContractValidatorTest" time="0.0"/>
+  <testcase name="toggleField_rejectedWhenOptionsPresent" classname="com.weartak.plugin.sdk.validation.SettingsSchemaContractValidatorTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

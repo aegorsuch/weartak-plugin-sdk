@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.ParcelRoundTripTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:32" hostname="ghost-pc" time="4.265">
+  <properties/>
+  <testcase name="auxiliaryContractParcels_roundTrip" classname="com.weartak.plugin.sdk.ParcelRoundTripTest" time="3.928"/>
+  <testcase name="pluginInfo_roundTrips" classname="com.weartak.plugin.sdk.ParcelRoundTripTest" time="0.064"/>
+  <testcase name="hostSettingsAndApplyResult_roundTrip" classname="com.weartak.plugin.sdk.ParcelRoundTripTest" time="0.087"/>
+  <testcase name="schemaRoundTrips" classname="com.weartak.plugin.sdk.ParcelRoundTripTest" time="0.059"/>
+  <testcase name="init_and_status_roundTrip" classname="com.weartak.plugin.sdk.ParcelRoundTripTest" time="0.056"/>
+  <testcase name="controlPayloads_roundTrip" classname="com.weartak.plugin.sdk.ParcelRoundTripTest" time="0.069"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

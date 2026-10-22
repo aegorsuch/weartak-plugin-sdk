@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.binder.PluginCepStreamSessionTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:39" hostname="ghost-pc" time="0.393">
+  <properties/>
+  <testcase name="remove_usesUnregisterOnV1Host" classname="com.weartak.plugin.sdk.binder.PluginCepStreamSessionTest" time="0.11"/>
+  <testcase name="update_usesApplyCepRuleEventOnStreamingHost" classname="com.weartak.plugin.sdk.binder.PluginCepStreamSessionTest" time="0.077"/>
+  <testcase name="invalidJsonRejected" classname="com.weartak.plugin.sdk.binder.PluginCepStreamSessionTest" time="0.025"/>
+  <testcase name="add_usesRegisterOnV1Host" classname="com.weartak.plugin.sdk.binder.PluginCepStreamSessionTest" time="0.022"/>
+  <testcase name="cepRulesDisabled_returnsFalse" classname="com.weartak.plugin.sdk.binder.PluginCepStreamSessionTest" time="0.026"/>
+  <testcase name="register_unregister_v1Compatibility" classname="com.weartak.plugin.sdk.binder.PluginCepStreamSessionTest" time="0.082"/>
+  <testcase name="update_isIdempotentForIdenticalPayload" classname="com.weartak.plugin.sdk.binder.PluginCepStreamSessionTest" time="0.024"/>
+  <testcase name="remoteException_returnsFalse" classname="com.weartak.plugin.sdk.binder.PluginCepStreamSessionTest" time="0.026"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

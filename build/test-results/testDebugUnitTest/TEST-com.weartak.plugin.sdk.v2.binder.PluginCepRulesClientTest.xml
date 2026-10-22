@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.v2.binder.PluginCepRulesClientTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:40" hostname="ghost-pc" time="0.26">
+  <properties/>
+  <testcase name="advisoryIdentifiers_passedThroughUnmodified" classname="com.weartak.plugin.sdk.v2.binder.PluginCepRulesClientTest" time="0.025"/>
+  <testcase name="add_syncHostRejectionPropagates" classname="com.weartak.plugin.sdk.v2.binder.PluginCepRulesClientTest" time="0.035"/>
+  <testcase name="add_rejectsIncompatibleHostWithoutCallingAidl" classname="com.weartak.plugin.sdk.v2.binder.PluginCepRulesClientTest" time="0.017"/>
+  <testcase name="hostExplicitRejectionCodePropagates" classname="com.weartak.plugin.sdk.v2.binder.PluginCepRulesClientTest" time="0.023"/>
+  <testcase name="resolveTransportPath_requiresMatchingContractVersion" classname="com.weartak.plugin.sdk.v2.binder.PluginCepRulesClientTest" time="0.018"/>
+  <testcase name="update_idempotentSkipsSecondHostCall" classname="com.weartak.plugin.sdk.v2.binder.PluginCepRulesClientTest" time="0.072"/>
+  <testcase name="add_missingCapabilityUnavailable" classname="com.weartak.plugin.sdk.v2.binder.PluginCepRulesClientTest" time="0.027"/>
+  <testcase name="add_syncSuccessPropagatesHostAcceptance" classname="com.weartak.plugin.sdk.v2.binder.PluginCepRulesClientTest" time="0.026"/>
+  <testcase name="invalidJson_rejectedBeforeHostCall" classname="com.weartak.plugin.sdk.v2.binder.PluginCepRulesClientTest" time="0.017"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

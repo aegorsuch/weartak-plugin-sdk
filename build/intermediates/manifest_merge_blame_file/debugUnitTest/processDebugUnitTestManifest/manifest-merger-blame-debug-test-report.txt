@@ -1,0 +1,97 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.weartak.plugin.sdk.test" >
+4
+5    <uses-sdk
+5-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:5:5-74
+6        android:minSdkVersion="30"
+6-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:5:15-41
+7        android:targetSdkVersion="30" />
+7-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:5:42-71
+8
+9    <instrumentation
+9-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:11:5-13:77
+10        android:name="android.test.InstrumentationTestRunner"
+10-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:11:22-75
+11        android:label="Tests for com.weartak.plugin.sdk.test"
+11-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:13:22-75
+12        android:targetPackage="com.weartak.plugin.sdk.test" />
+12-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:12:22-73
+13
+14    <permission
+14-->[androidx.core:core:1.13.1] /home/ghost/.gradle/caches/8.9/transforms/eec031392c7304870b01c1382809f994/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+15        android:name="com.weartak.plugin.sdk.test.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+15-->[androidx.core:core:1.13.1] /home/ghost/.gradle/caches/8.9/transforms/eec031392c7304870b01c1382809f994/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+16        android:protectionLevel="signature" />
+16-->[androidx.core:core:1.13.1] /home/ghost/.gradle/caches/8.9/transforms/eec031392c7304870b01c1382809f994/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+17
+18    <uses-permission android:name="com.weartak.plugin.sdk.test.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+18-->[androidx.core:core:1.13.1] /home/ghost/.gradle/caches/8.9/transforms/eec031392c7304870b01c1382809f994/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+18-->[androidx.core:core:1.13.1] /home/ghost/.gradle/caches/8.9/transforms/eec031392c7304870b01c1382809f994/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+19
+20    <application
+20-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:7:5-9:19
+21        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+21-->[androidx.core:core:1.13.1] /home/ghost/.gradle/caches/8.9/transforms/eec031392c7304870b01c1382809f994/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+22        android:debuggable="true" >
+22-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:7:18-43
+23        <uses-library android:name="android.test.runner" />
+23-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:8:9-60
+23-->/home/ghost/Documents/Ascent/WearOS/PluginTemplate/weartak-plugin-sdk/build/intermediates/tmp/manifest/test/debug/tempFile1ProcessTestManifest5494868003447845627.xml:8:23-57
+24
+25        <provider
+25-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
+26            android:name="androidx.startup.InitializationProvider"
+26-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:25:13-67
+27            android:authorities="com.weartak.plugin.sdk.test.androidx-startup"
+27-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:26:13-68
+28            android:exported="false" >
+28-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:27:13-37
+29            <meta-data
+29-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+30                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+30-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+31                android:value="androidx.startup" />
+31-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+32        </provider>
+33
+34        <receiver
+34-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+35            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+35-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+36            android:directBootAware="false"
+36-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+37            android:enabled="true"
+37-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+38            android:exported="true"
+38-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+39            android:permission="android.permission.DUMP" >
+39-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+40            <intent-filter>
+40-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+41                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+41-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+41-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+42            </intent-filter>
+43            <intent-filter>
+43-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+44                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+44-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+44-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+45            </intent-filter>
+46            <intent-filter>
+46-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+47                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+47-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+47-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+48            </intent-filter>
+49            <intent-filter>
+49-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+50                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+50-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+50-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/ghost/.gradle/caches/8.9/transforms/64a65bb48a840e8fddb61ad9916311fc/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+51            </intent-filter>
+52        </receiver>
+53    </application>
+54
+55</manifest>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.weartak.plugin.sdk.v2.validation.DetectionEventsV2ValidatorTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:41" hostname="ghost-pc" time="0.119">
+  <properties/>
+  <testcase name="validate_rejectsBlankClassificationLabel" classname="com.weartak.plugin.sdk.v2.validation.DetectionEventsV2ValidatorTest" time="0.023"/>
+  <testcase name="validate_rejectsConfidenceAboveOne" classname="com.weartak.plugin.sdk.v2.validation.DetectionEventsV2ValidatorTest" time="0.017"/>
+  <testcase name="validate_rejectsOversizedAttributesJson" classname="com.weartak.plugin.sdk.v2.validation.DetectionEventsV2ValidatorTest" time="0.022"/>
+  <testcase name="validate_rejectsInvalidAttributesJson" classname="com.weartak.plugin.sdk.v2.validation.DetectionEventsV2ValidatorTest" time="0.018"/>
+  <testcase name="validate_acceptsMinimalEvent" classname="com.weartak.plugin.sdk.v2.validation.DetectionEventsV2ValidatorTest" time="0.021"/>
+  <testcase name="validate_rejectsBlankPluginId" classname="com.weartak.plugin.sdk.v2.validation.DetectionEventsV2ValidatorTest" time="0.018"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
