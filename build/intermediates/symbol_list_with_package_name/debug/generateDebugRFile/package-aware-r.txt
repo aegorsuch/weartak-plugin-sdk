@@ -1,1 +1,0 @@
-com.weartak.plugin.sdk

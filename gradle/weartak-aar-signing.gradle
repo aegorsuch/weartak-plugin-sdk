@@ -1,0 +1,53 @@
+// AARs are libraries, so Android's APK signingConfigs do not apply to them.
+// These opt-in tasks JAR-sign the outer AAR using the plugin template's credentials.
+def signingProperties = new Properties()
+def signingPropertiesFile = rootProject.file('signing.properties')
+if (signingPropertiesFile.isFile()) {
+    signingPropertiesFile.withInputStream { signingProperties.load(it) }
+}
+
+def signingValue = { String environmentName, String propertyName ->
+    System.getenv(environmentName) ?: signingProperties.getProperty(propertyName)
+}
+
+['Debug', 'Release'].each { variant ->
+    def prefix = variant.toUpperCase()
+    def artifactName = "weartak-plugin-sdk-${variant.toLowerCase()}"
+    tasks.register("sign${variant}Aar") {
+        group = 'build'
+        description = "Sign the ${variant.toLowerCase()} AAR with the WearTAK ${variant.toLowerCase()} keystore."
+        dependsOn("bundle${variant}Aar")
+
+        doLast {
+            def keystorePath = signingValue("WEARTAK_${prefix}_KEYSTORE_FILE", "${prefix}_KEYSTORE_FILE")
+            def storePassword = signingValue("WEARTAK_${prefix}_STORE_PASSWORD", "${prefix}_STORE_PASSWORD")
+            def keyAlias = signingValue("WEARTAK_${prefix}_KEY_ALIAS", "${prefix}_KEY_ALIAS")
+            def keyPassword = signingValue("WEARTAK_${prefix}_KEY_PASSWORD", "${prefix}_KEY_PASSWORD")
+            if (![keystorePath, storePassword, keyAlias, keyPassword].every { it }) {
+                throw new GradleException("Missing ${prefix} signing values. Set the WEARTAK_${prefix}_* environment variables or add signing.properties.")
+            }
+
+            def keystore = rootProject.file(keystorePath)
+            if (!keystore.isFile()) {
+                throw new GradleException("${prefix} keystore does not exist: ${keystore}")
+            }
+
+            def unsignedAar = layout.buildDirectory.file("outputs/aar/${artifactName}.aar").get().asFile
+            def signedAar = layout.buildDirectory.file("outputs/aar/${artifactName}-signed.aar").get().asFile
+            if (!unsignedAar.isFile()) {
+                throw new GradleException("AAR does not exist: ${unsignedAar}")
+            }
+
+            project.exec {
+                executable = new File(System.getProperty('java.home'), 'bin/jarsigner').absolutePath
+                args '-keystore', keystore.absolutePath,
+                    '-storepass:env', 'WEARTAK_AAR_STORE_PASSWORD',
+                    '-keypass:env', 'WEARTAK_AAR_KEY_PASSWORD',
+                    '-signedjar', signedAar.absolutePath,
+                    unsignedAar.absolutePath, keyAlias
+                environment 'WEARTAK_AAR_STORE_PASSWORD', storePassword
+                environment 'WEARTAK_AAR_KEY_PASSWORD', keyPassword
+            }
+        }
+    }
+}

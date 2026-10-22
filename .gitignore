@@ -1,0 +1,14 @@
+/.gradle/
+/build/
+/local.properties
+/signing.properties
+/.idea/
+*.iml
+*.jks
+*.keystore
+*.apk
+*.aar
+*.class
+*.dex
+*.log
+.DS_Store

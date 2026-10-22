@@ -1,6 +1,0 @@
-[
-    {
-        "merged": "com.weartak.plugin.sdk.weartak-plugin-sdk-release-10:/drawable-v21/notification_action_background.xml",
-        "source": "com.weartak.plugin.sdk.weartak-plugin-sdk-core-1.13.1-5:/drawable-v21/notification_action_background.xml"
-    }
-]

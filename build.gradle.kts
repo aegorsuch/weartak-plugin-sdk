@@ -1,8 +1,10 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.parcelize")
+    id("com.android.library") version "8.7.2"
+    id("org.jetbrains.kotlin.android") version "2.0.21"
+    id("org.jetbrains.kotlin.plugin.parcelize") version "2.0.21"
 }
+
+apply(from = "gradle/weartak-aar-signing.gradle")
 
 android {
     namespace = "com.weartak.plugin.sdk"

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.weartak.plugin.sdk.validation.MainUiSchemaContractValidatorTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-06-16T17:42:41" hostname="ghost-pc" time="0.039">
-  <properties/>
-  <testcase name="strictV1_acceptsStatusAndKeyValue" classname="com.weartak.plugin.sdk.validation.MainUiSchemaContractValidatorTest" time="0.025"/>
-  <testcase name="strictV1_rejectsUnknownCard" classname="com.weartak.plugin.sdk.validation.MainUiSchemaContractValidatorTest" time="0.013"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
