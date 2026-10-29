@@ -11,6 +11,7 @@ import com.weartak.plugin.sdk.model.PluginMainUiSchemaParcel;
 import com.weartak.plugin.sdk.aidl.IWearTakHostCallback;
 import com.weartak.plugin.sdk.aidl.IWearTakPluginControl;
 import com.weartak.plugin.sdk.v2.aidl.IWearTakPluginHostControlV2;
+import com.weartak.plugin.sdk.v3.aidl.IWearTakPluginHostControlV3;
 import android.os.Bundle;
 
 /**
@@ -53,4 +54,11 @@ interface IWearTakPlugin {
     PluginMainUiSchemaParcel getMainUiSchema();
     Bundle getMainUiState();
     void invokeMainUiAction(String actionId, in Bundle args);
+    /**
+     * v3 initialization for host-to-plugin PCM streaming.
+     *
+     * Appended to preserve every existing v1/v2 Binder transaction code. A v3 plugin receives
+     * the earlier control planes as well as [controlV3]; older hosts never call this method.
+     */
+    void initializePluginV3(in PluginInitParcel init, in IWearTakPluginControl control, in IWearTakPluginHostControlV2 controlV2, in IWearTakPluginHostControlV3 controlV3);
 }
