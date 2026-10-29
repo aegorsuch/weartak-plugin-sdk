@@ -7,10 +7,12 @@ import kotlinx.parcelize.Parcelize
 object MainUiCardTypes {
     const val STATUS: String = "STATUS"
     const val KEY_VALUE_LIST: String = "KEY_VALUE_LIST"
+    const val ACTION: String = "ACTION"
 }
 
 /**
- * Declarative main-UI card. Host v1 must support [MainUiCardTypes.STATUS] and [MainUiCardTypes.KEY_VALUE_LIST].
+ * Declarative main-UI card. Original v1 hosts support STATUS and KEY_VALUE_LIST.
+ * ACTION requires an updated renderer using [com.weartak.plugin.sdk.MainUiActionContract].
  */
 @Parcelize
 data class MainUiCardParcel(

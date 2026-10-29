@@ -1,6 +1,7 @@
 package com.weartak.plugin.sdk.validation
 
 import com.weartak.plugin.sdk.HostSettingsContract
+import com.weartak.plugin.sdk.MainUiActionContract
 import com.weartak.plugin.sdk.WearTakPluginContract
 import com.weartak.plugin.sdk.model.MainUiCardTypes
 import com.weartak.plugin.sdk.model.PluginMainUiSchemaParcel
@@ -126,7 +127,7 @@ object SettingsSchemaContractValidator {
 }
 
 object MainUiSchemaContractValidator {
-    private val v1HostMinimum = setOf(MainUiCardTypes.STATUS, MainUiCardTypes.KEY_VALUE_LIST)
+    private val supportedV1CardTypes = setOf(MainUiCardTypes.STATUS, MainUiCardTypes.KEY_VALUE_LIST, MainUiCardTypes.ACTION)
 
     fun sanitize(schema: PluginMainUiSchemaParcel): PluginMainUiSchemaParcel =
         schema.copy(
@@ -154,8 +155,14 @@ object MainUiSchemaContractValidator {
             if (!ids.add(card.cardId)) issues += ContractIssue("cardId", "Duplicate ${card.cardId}")
             if (card.title.isBlank()) issues += ContractIssue("title", "Blank title")
             val t = card.cardType.uppercase()
-            if (strictV1CardTypesOnly && t !in v1HostMinimum) {
+            if (strictV1CardTypesOnly && t !in supportedV1CardTypes) {
                 issues += ContractIssue("cardType", "Unsupported in strict v1: $t")
+            }
+            if (t == MainUiCardTypes.ACTION) {
+                when (val result = MainUiActionContract.parseContent(card.content)) {
+                    is ContractValidationResult.Err -> issues += result.issues
+                    is ContractValidationResult.Ok -> Unit
+                }
             }
             when (BundleContractValidator.validateContentBundle(card.content)) {
                 is ContractValidationResult.Ok -> Unit
