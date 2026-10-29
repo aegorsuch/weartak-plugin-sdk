@@ -133,3 +133,52 @@ jarsigner -verify build/outputs/aar/weartak-plugin-sdk-release-signed.aar
 ```
 
 A JAR signature on an AAR can be verified as an archive signature. Android does not use it as an APK install signature; plugins still need the template's APK signing when packaged.
+
+## Forge CI and rolling-release status
+
+`.gitlab-ci.yml` runs on branch pushes, merge requests, and manually started
+branch pipelines. Push pipelines are suppressed when an open merge request
+already supplies its pipeline. Each pipeline uses JDK 17, checksum-verified
+Android command-line tools, API 34, and Build Tools 34.0.0 to run both variants'
+unit tests, lint, and AAR assembly. Missing or empty AAR outputs fail the job.
+JUnit, test HTML, and lint reports are retained for 14 days, including on failure.
+Unsigned AARs are built for validation only and are not uploaded as job artifacts.
+No signing credentials are required, and Maven/dependency publication is unchanged.
+
+Forge project `weartak-plugins/weartak-plugin-sdk` has CI and shared runners
+enabled, with the default CI configuration path. The job explicitly targets the
+online `linux-canary` x86-64 Linux runner; the untagged Linux runner reported
+ARM64 during inspection. Keep this tag aligned with an available x86-64 Linux
+container runner. Android host build tools do not support ARM64 Linux.
+
+**GitHub rolling-release publishing is disabled.** Inspection found no
+project-level CI variables. The existing `signReleaseAar` task signs but does
+not verify signer identity or reject partially signed archives. Plain
+`jarsigner -verify` alone is not a trusted-signer gate, and signing support does
+not prove that release credentials or inherited variables are correctly configured.
+
+Before enabling a publisher, an authorized maintainer must:
+
+- Supply the four existing `WEARTAK_RELEASE_*` values through protected Forge
+  variables, with the keystore supplied as a file variable. Keep passwords masked
+  and restrict credentials to protected `main` pipelines, never merge requests.
+- Establish an independently confirmed release certificate SHA-256 fingerprint
+  or truststore and implement fail-closed archive verification: verify every
+  payload entry, reject unsigned/tampered entries, require the expected signer,
+  and define certificate validity/trust policy. Add positive and negative tests
+  covering unsigned, tampered, partially signed, and wrong-signer AARs.
+- Provide a protected, masked GitHub credential restricted to contents/releases
+  write access on **`aegorsuch/weartak-plugin-sdk` only**. No company repository
+  may be targeted. No credentials or Forge variables were created by this change.
+- Choose and document the fixed rolling-release tag. Gate publishing on a
+  successful canonical Forge protected-`main` pipeline, serialize updates, and
+  reject stale pipelines so older builds cannot replace newer release assets.
+- Build `signReleaseAar` only after successful tests/lint, verify that exact
+  `weartak-plugin-sdk-release-signed.aar`, and transfer only that verified AAR
+  plus its SHA-256 and Forge source/pipeline provenance. Never rebuild or select
+  artifacts via broad globs in the upload job. Update the personal mirror/tag
+  to the corresponding source commit before updating its fixed release.
+
+Until these prerequisites are established, there is no release job, GitHub
+write operation, or downloadable SDK release endpoint. Consumers must continue
+using the pinned-source build procedure above.
