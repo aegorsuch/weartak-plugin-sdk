@@ -1,0 +1,55 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+
+stages:
+  - verify
+
+sdk-check:
+  stage: verify
+  image: eclipse-temurin:17-jdk-jammy
+  # Verified Forge x86-64 Linux runner; Android build tools cannot run on ARM64.
+  tags:
+    - linux-canary
+  timeout: 45 minutes
+  variables:
+    ANDROID_HOME: "$CI_PROJECT_DIR/.android-sdk"
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+    ANDROID_COMMAND_LINE_TOOLS_SHA256: "2d2d50857e4eb553af5a6dc3ad507a17adf43d115264b1afc116f95c92e5e258"
+  before_script:
+    - |
+      set -euo pipefail
+      test "$(uname -m)" = "x86_64"
+      apt-get update -qq
+      apt-get install -y --no-install-recommends ca-certificates curl unzip
+      curl --fail --silent --show-error --location --retry 3 \
+        --output /tmp/android-command-line-tools.zip \
+        https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+      echo "$ANDROID_COMMAND_LINE_TOOLS_SHA256  /tmp/android-command-line-tools.zip" | sha256sum --check --strict
+      mkdir -p "$ANDROID_HOME/cmdline-tools"
+      unzip -q /tmp/android-command-line-tools.zip -d "$ANDROID_HOME/cmdline-tools"
+      mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+      rm /tmp/android-command-line-tools.zip
+      SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+      "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --licenses <<< "$(printf 'y\n%.0s' {1..100})"
+      "$SDKMANAGER" --sdk_root="$ANDROID_HOME" "platforms;android-34" "build-tools;34.0.0"
+  script:
+    - ./gradlew --no-daemon --console=plain testDebugUnitTest testReleaseUnitTest lintDebug lintRelease assembleDebug assembleRelease
+    - test -s build/outputs/aar/weartak-plugin-sdk-debug.aar
+    - test -s build/outputs/aar/weartak-plugin-sdk-release.aar
+  artifacts:
+    when: always
+    expire_in: 14 days
+    reports:
+      junit:
+        - build/test-results/testDebugUnitTest/TEST-*.xml
+        - build/test-results/testReleaseUnitTest/TEST-*.xml
+    paths:
+      - build/reports/tests/
+      - build/reports/lint-results-*
+
+# No release job: signing credentials and trusted-signer verification are not
+# configured. Unsigned AARs must not become CI downloads or GitHub release assets.
