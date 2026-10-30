@@ -107,6 +107,32 @@ Fail explicitly when source access, the pinned revision, or either artifact is
 unavailable; do not silently use older template AARs. Workspace-local AAR paths
 are development inputs, not reproducible CI dependencies.
 
+Both Gradle plugin and library dependency resolution prefer
+`https://artifacts.tak.gov/artifactory/maven-release` when a complete read-only
+credential pair is available. Username and password are chosen independently
+from the first nonblank environment value in these orders:
+
+| Username | Password |
+| --- | --- |
+| `ARTIFACTORY_CONSUME_USER` | `ARTIFACTORY_CONSUME_PASSWORD` |
+| `ARTIFACTORY_USER` | `ARTIFACTORY_PASSWORD` |
+| `TAK_USERNAME` | `TAK_PASSWORD` |
+
+Missing/blank values are skipped; partially configured credentials do not
+enable the private repository. Google, Maven Central, and the Gradle plugin
+portal remain public fallbacks in their existing scopes. Configuration logs
+only credential-presence and routing booleans, never values. CI must receive
+the approved read-only consumer pair through its existing authorized mechanism;
+this repository does not create variables or relax credential protections.
+Without that pair, public resolution remains subject to upstream rate limits.
+
+Run `bash gradle/tests/repository-routing.sh` to exercise the actual settings
+offline against eight synthetic credential cases, including alias precedence,
+whitespace, partial pairs and mixed aliases in both scopes. The test substitutes
+an empty root build without Android/dependency resolution; no private service
+is contacted and no real credential is used. Forge CI runs this matrix before
+the Android verification tasks.
+
 This repository does not configure Maven publication or a release artifact
 download endpoint. A consumer using downloaded AARs instead must supply a real
 published artifact URL and verified SHA-256 for each variant. Uncommitted SDK

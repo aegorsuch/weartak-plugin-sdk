@@ -1,0 +1,35 @@
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+
+gradle.settingsEvaluated { settings ->
+    def expectedUser = System.getenv('ROUTING_TEST_USER')
+    def expectedPassword = System.getenv('ROUTING_TEST_PASSWORD')
+    def enabled = expectedUser && expectedPassword
+    [
+        settings.pluginManagement.repositories,
+        settings.dependencyResolutionManagement.repositories,
+    ].each { repositories ->
+        def privateRepos = repositories.findAll { it.name == 'takArtifactory' }
+        assert privateRepos.size() == (enabled ? 1 : 0): 'Complete-pair repository gate mismatch'
+        if (enabled) {
+            def repo = privateRepos.first()
+            assert repo instanceof MavenArtifactRepository
+            assert repositories.first() == repo: 'Artifactory must precede public fallback'
+            assert repo.url.toString() == 'https://artifacts.tak.gov/artifactory/maven-release'
+            // Do not interpolate credentials into assertion failures.
+            if (repo.credentials.username != expectedUser) {
+                throw new GradleException('Username alias precedence mismatch')
+            }
+            if (repo.credentials.password != expectedPassword) {
+                throw new GradleException('Password alias precedence mismatch')
+            }
+        }
+        assert repositories.any { it.name == 'Google' }: 'Google fallback missing'
+        assert repositories.any { it.name == 'MavenRepo' }: 'Maven Central fallback missing'
+    }
+    assert settings.pluginManagement.repositories.any { it.name == 'Gradle Central Plugin Repository' }
+    assert settings.dependencyResolutionManagement.repositoriesMode.get().name() == 'FAIL_ON_PROJECT_REPOS'
+    // Test actual settings without resolving Android plugins or contacting repositories.
+    def emptyBuildFile = 'repository-routing-test-empty.gradle'
+    assert !new File(settings.settingsDir, emptyBuildFile).exists(): 'Routing fixture must not load a real build script'
+    settings.rootProject.buildFileName = emptyBuildFile
+}

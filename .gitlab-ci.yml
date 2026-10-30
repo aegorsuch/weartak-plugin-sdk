@@ -37,6 +37,7 @@ sdk-check:
       "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --licenses <<< "$(printf 'y\n%.0s' {1..100})"
       "$SDKMANAGER" --sdk_root="$ANDROID_HOME" "platforms;android-34" "build-tools;34.0.0"
   script:
+    - bash gradle/tests/repository-routing.sh
     - ./gradlew --no-daemon --console=plain testDebugUnitTest testReleaseUnitTest lintDebug lintRelease assembleDebug assembleRelease
     - test -s build/outputs/aar/weartak-plugin-sdk-debug.aar
     - test -s build/outputs/aar/weartak-plugin-sdk-release.aar
