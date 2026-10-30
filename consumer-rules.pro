@@ -5,3 +5,7 @@
 -keep class com.weartak.plugin.sdk.model.** implements android.os.Parcelable {
     public static final ** CREATOR;
 }
+-keep class com.weartak.plugin.sdk.mopp.aidl.** { *; }
+-keep class com.weartak.plugin.sdk.mopp.model.** implements android.os.Parcelable {
+    public static final ** CREATOR;
+}
