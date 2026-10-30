@@ -121,9 +121,17 @@ from the first nonblank environment value in these orders:
 Missing/blank values are skipped; partially configured credentials do not
 enable the private repository. Google, Maven Central, and the Gradle plugin
 portal remain public fallbacks in their existing scopes. Configuration logs
-only credential-presence and routing booleans, never values. CI must receive
-the approved read-only consumer pair through its existing authorized mechanism;
-this repository does not create variables or relax credential protections.
+only credential-presence and routing booleans, never values. Forge CI includes
+`devsecops/gitlab-ci-common`'s `/template/artifactory_token_service.yml` and
+uses `.artifactory_service_create_token_bash` for its root JDK image. Each Gradle
+job exchanges its job identity for a runtime Artifactory token before setup,
+then supplies `ARTIFACTORY_USER` and `ARTIFACTORY_PASSWORD` to the build. No
+launcher repository init script is installed: that would conflict with
+`FAIL_ON_PROJECT_REPOS`. This repository does not create static secrets,
+variables, or relax credential protections. If token exchange requires a user
+login, sign into `https://artifacts.tak.gov` once as the pipeline user and retry.
+Robolectric test JVMs use the same paired repository configuration because
+their Android-jar downloads bypass Gradle's dependency repositories.
 Without that pair, public resolution remains subject to upstream rate limits.
 
 Run `bash gradle/tests/repository-routing.sh` to exercise the actual settings

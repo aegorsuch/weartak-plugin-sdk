@@ -28,6 +28,17 @@ gradle.settingsEvaluated { settings ->
     }
     assert settings.pluginManagement.repositories.any { it.name == 'Gradle Central Plugin Repository' }
     assert settings.dependencyResolutionManagement.repositoriesMode.get().name() == 'FAIL_ON_PROJECT_REPOS'
+    assert settings.gradle.ext.has('takArtifactoryUrl') == (enabled as boolean)
+    if (enabled) {
+        if (settings.gradle.ext.get('takArtifactoryUser') != expectedUser ||
+            settings.gradle.ext.get('takArtifactoryPassword') != expectedPassword) {
+            throw new GradleException('Robolectric credential handoff mismatch')
+        }
+        assert settings.gradle.ext.get('takArtifactoryUrl') == 'https://artifacts.tak.gov/artifactory/maven-release'
+    } else {
+        assert !settings.gradle.ext.has('takArtifactoryUser')
+        assert !settings.gradle.ext.has('takArtifactoryPassword')
+    }
     // Test actual settings without resolving Android plugins or contacting repositories.
     def emptyBuildFile = 'repository-routing-test-empty.gradle'
     assert !new File(settings.settingsDir, emptyBuildFile).exists(): 'Routing fixture must not load a real build script'
