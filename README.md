@@ -107,6 +107,40 @@ Fail explicitly when source access, the pinned revision, or either artifact is
 unavailable; do not silently use older template AARs. Workspace-local AAR paths
 are development inputs, not reproducible CI dependencies.
 
+Both Gradle plugin and library dependency resolution prefer
+`https://artifacts.tak.gov/artifactory/maven-release` when a complete read-only
+credential pair is available. Username and password are chosen independently
+from the first nonblank environment value in these orders:
+
+| Username | Password |
+| --- | --- |
+| `ARTIFACTORY_CONSUME_USER` | `ARTIFACTORY_CONSUME_PASSWORD` |
+| `ARTIFACTORY_USER` | `ARTIFACTORY_PASSWORD` |
+| `TAK_USERNAME` | `TAK_PASSWORD` |
+
+Missing/blank values are skipped; partially configured credentials do not
+enable the private repository. Google, Maven Central, and the Gradle plugin
+portal remain public fallbacks in their existing scopes. Configuration logs
+only credential-presence and routing booleans, never values. Forge CI includes
+`devsecops/gitlab-ci-common`'s `/template/artifactory_token_service.yml` and
+uses `.artifactory_service_create_token_bash` for its root JDK image. Each Gradle
+job exchanges its job identity for a runtime Artifactory token before setup,
+then supplies `ARTIFACTORY_USER` and `ARTIFACTORY_PASSWORD` to the build. No
+launcher repository init script is installed: that would conflict with
+`FAIL_ON_PROJECT_REPOS`. This repository does not create static secrets,
+variables, or relax credential protections. If token exchange requires a user
+login, sign into `https://artifacts.tak.gov` once as the pipeline user and retry.
+Robolectric test JVMs use the same paired repository configuration because
+their Android-jar downloads bypass Gradle's dependency repositories.
+Without that pair, public resolution remains subject to upstream rate limits.
+
+Run `bash gradle/tests/repository-routing.sh` to exercise the actual settings
+offline against eight synthetic credential cases, including alias precedence,
+whitespace, partial pairs and mixed aliases in both scopes. The test substitutes
+an empty root build without Android/dependency resolution; no private service
+is contacted and no real credential is used. Forge CI runs this matrix before
+the Android verification tasks.
+
 This repository does not configure Maven publication or a release artifact
 download endpoint. A consumer using downloaded AARs instead must supply a real
 published artifact URL and verified SHA-256 for each variant. Uncommitted SDK
@@ -182,3 +216,80 @@ Before enabling a publisher, an authorized maintainer must:
 Until these prerequisites are established, there is no release job, GitHub
 write operation, or downloadable SDK release endpoint. Consumers must continue
 using the pinned-source build procedure above.
+
+## Optional MOPP/PPE control v1
+
+`com.weartak.plugin.sdk.mopp.aidl.IMoppPpeControlV1` is an independent,
+host-implemented synchronous Binder extension. No existing AIDL method,
+transaction order, API version, capability parcel, or parcel layout changes.
+An implementing host puts Boolean `true` under
+`MoppPpeContract.EXTRA_CAPABILITY` (`"moppPpeV1"`) and the control's Binder under
+`MoppPpeContract.EXTRA_CONTROL` (`"moppPpeControlV1"`) in the existing
+`PluginInitParcel.hostExtras`. Both are required. Older hosts/plugins omit or
+ignore these Bundle entries; clients must treat missing support, dead Binder,
+and incompatible responses as unavailable, never as a successful default state.
+
+The plugin owns its native screen and immediate-save buttons. The host owns
+durable state and all CoT/Ditto/Companion transport. The host must authorize the
+calling UID against the currently active compatible plugin binding on **every**
+call, including reads; possessing an old Binder is not authorization. Revoke
+access when the binding ends. An absent/incompatible plugin stops operational
+reporting without deleting saved selection, timestamp, or enable preference.
+
+| Call | Meaning |
+| --- | --- |
+| `read()` | Return current authoritative persisted snapshot, without mutation. |
+| `save(expectedRevision, mutationId, selection)` | Persist explicit posture tap and host-assigned timestamp, then acknowledge. |
+| `setEnabled(expectedRevision, mutationId, enabled)` | Persist enable preference without changing saved posture/time. |
+
+`MoppPpeStateParcel` contains:
+
+| Field | Semantics |
+| --- | --- |
+| `revision: Long` | Nonnegative host-owned durable revision, shared by save and enable writes. |
+| `selection: String?` | Null means never saved; allowed saved values are `"none"`, `"0"` through `"4"`. Explicit `"none"` is a real saved posture, not missing state. |
+| `savedAtEpochMillis: Long?` | UTC epoch milliseconds; null means never saved or legacy saved time unknown. Preserve legacy unknown time until an explicit save. |
+| `enabled: Boolean` | Retained user enable preference, not effective reporting availability. |
+| `contributing: Boolean` | Effective operational reporting availability, computed by host from compatibility, active binding, saved posture, and enable state. Not a client-writable setting. |
+| `lastMutationId: String?` | Last durably acknowledged mutation identity; null for legacy/unmodified state. |
+
+`MoppPpeResultParcel(accepted, code, state)` uses `MoppPpeResultCode`:
+`OK=0`, `REVISION_CONFLICT=1`, `INVALID_REQUEST=2`, `UNAUTHORIZED=3`,
+`INACTIVE_SESSION=4`, `PERSISTENCE_FAILED=5`. Success requires `accepted=true`,
+`code=OK`, and a nonnull authoritative snapshot. Failure requires
+`accepted=false`; a conflict can include current state, but denial must not
+disclose it. Unknown codes or contradictory result shapes are protocol errors.
+Binder/transport exceptions are errors, never acknowledgements.
+
+Host implementation obligations:
+
+- Validate nonnegative expected revision, nonblank mutation identity and allowed
+  posture before writes. Bound untrusted strings before persistence. Reject
+  malformed requests explicitly; null AIDL inputs are invalid.
+- Serialize save and enable operations against the same revision. Compare and
+  persist atomically; increment revision only on a successful new mutation.
+  Return `REVISION_CONFLICT` for stale writes. Do not wrap revision on overflow.
+- Persist selection/time/enable/revision/mutation identity as one transaction
+  before returning `OK`. Storage failure returns `PERSISTENCE_FAILED` without
+  reporting an uncommitted state or dispatching it operationally.
+- Assign time only on an explicit successful save, including a same-posture tap.
+  Reads, reconnects, initialization, enable changes, and failure paths must not
+  invent or refresh timestamps.
+- Recognize an identical repeat of the last successful mutation before CAS so
+  it cannot increment revision, refresh time, or repeat operational side effects.
+  Reusing that identity for a different operation/payload is `INVALID_REQUEST`.
+  Reconcile a lost acknowledgement by reading `lastMutationId`; clients must not
+  automatically replay writes after disconnect/conflict. Refresh first and
+  require a new explicit user action with a fresh identity.
+
+SDK tests exercise generated remote-proxy transactions, typed parcel roundtrips,
+nullable/legacy states, every failure code, disconnected transport, and extension
+discovery through unchanged initialization. Host integration tests must establish
+authorization, durable atomicity, conflict/idempotency and transport gating;
+these cannot be enforced by parcel definitions alone.
+
+Consumers must pin a merged canonical Forge source commit and run the existing
+source-build CI path for **both** variants. Record source SHA, successful Forge
+pipeline, task invocation and SHA-256 for each local AAR input. Local hashes
+identify those exact files, not a promise of byte-identical cross-platform
+builds. This extension does not enable unsigned AAR job downloads or releases.

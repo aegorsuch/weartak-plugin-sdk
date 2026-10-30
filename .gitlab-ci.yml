@@ -1,3 +1,10 @@
+include:
+  - project: devsecops/gitlab-ci-common
+    ref: master
+    file: /template/artifactory_token_service.yml
+
+before_script: []
+
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -8,7 +15,14 @@ workflow:
 stages:
   - verify
 
+.artifactory_credentials:
+  extends: .artifactory_service_create_token_bash
+  before_script:
+    - !reference [.artifactory_service_create_token_bash, before_script]
+    - export ARTIFACTORY_USER="$GITLAB_USER_EMAIL" ARTIFACTORY_PASSWORD="$CI_JOB_ARTIFACTORY_TOKEN"
+
 sdk-check:
+  extends: .artifactory_credentials
   stage: verify
   image: eclipse-temurin:17-jdk-jammy
   # Verified Forge x86-64 Linux runner; Android build tools cannot run on ARM64.
@@ -20,6 +34,7 @@ sdk-check:
     GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
     ANDROID_COMMAND_LINE_TOOLS_SHA256: "2d2d50857e4eb553af5a6dc3ad507a17adf43d115264b1afc116f95c92e5e258"
   before_script:
+    - !reference [.artifactory_credentials, before_script]
     - |
       set -euo pipefail
       test "$(uname -m)" = "x86_64"
@@ -37,6 +52,7 @@ sdk-check:
       "$SDKMANAGER" --sdk_root="$ANDROID_HOME" --licenses <<< "$(printf 'y\n%.0s' {1..100})"
       "$SDKMANAGER" --sdk_root="$ANDROID_HOME" "platforms;android-34" "build-tools;34.0.0"
   script:
+    - bash gradle/tests/repository-routing.sh
     - ./gradlew --no-daemon --console=plain testDebugUnitTest testReleaseUnitTest lintDebug lintRelease assembleDebug assembleRelease
     - test -s build/outputs/aar/weartak-plugin-sdk-debug.aar
     - test -s build/outputs/aar/weartak-plugin-sdk-release.aar
