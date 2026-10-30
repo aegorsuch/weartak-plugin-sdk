@@ -26,4 +26,4 @@ check ARTIFACTORY_CONSUME_USER='   ' ARTIFACTORY_USER='   ' TAK_USERNAME=tak-use
   ROUTING_TEST_USER=tak-user ROUTING_TEST_PASSWORD=tak-password
 check ARTIFACTORY_CONSUME_USER=mixed-user TAK_PASSWORD=mixed-password \
   ROUTING_TEST_USER=mixed-user ROUTING_TEST_PASSWORD=mixed-password
-echo 'Repository routing matrix passed (8 cases, both scopes; no remote requests).'
+echo 'Repository routing matrix passed (8 cases, both scopes; no repository requests).'
