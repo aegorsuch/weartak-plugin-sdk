@@ -51,6 +51,36 @@ uses these exact keys:
 | `actionLabel` | String | Required, nonblank, at most 256 UTF-8 bytes |
 | `enabled` | Boolean | Optional; defaults to `true` |
 | `actionArgsJson` | String | Optional; empty/omitted means empty arguments; otherwise JSON object with string values only |
+| `actionPresentation` | String | Optional; `TEXT` (default) or `ICON` |
+| `actionIcon` | String | `NOTE`, `BLOODHOUND`, `STOP`, `TARGET`, or `BACK`; required for `ICON`, forbidden for `TEXT` |
+| `actionPlacement` | String | Optional; `BODY` (default) or `HEADER_END` |
+| `actionGroup` | String | Optional nonblank string, at most 128 UTF-8 bytes; only allowed for `BODY` `ICON` actions |
+| `showTitle` | Boolean | Optional; defaults to `true`; must be `false` for `ICON` |
+
+Unknown keys, wrong types (including explicit nulls), unknown/case-mismatched
+enum values, and invalid combinations are rejected. `TEXT` requires `BODY`
+placement without an icon or group; it may suppress its title. `HEADER_END`
+requires `ICON`, `BACK`, `showTitle=false`, and no group. At most one
+`HEADER_END` action is allowed per schema, even if disabled. Titles remain
+mandatory semantic text when hidden; `actionLabel` remains mandatory and is the
+accessibility label for icon actions.
+
+Hosts render their own NOTE/BLOODHOUND/STOP/TARGET/BACK assets, not plugin-provided
+images. `BLOODHOUND` means the WearTAK Bloodhound icon, not dog paws. `STOP`
+means the WearTAK stop icon for an active incident Bloodhound action; only
+`BODY` `ICON` placement is allowed. Operational state and stopping remain
+host-owned; the icon adds no state or dispatch behavior. Body icons
+with the same nonblank group share an icon-only action row; group identity is
+scoped to the schema. `HEADER_END` places Back at the top-right of the page,
+not in the body. Hidden titles must not create a title row or text button.
+Hosts advertise Int `1` (`MainUiActionContract.PRESENTATION_VERSION`) in
+`PluginInitParcel.hostExtras` under
+`MainUiActionContract.HOST_PRESENTATION_VERSION_KEY`
+(`"com.weartak.hostedUi.actionPresentationVersion"`). Plugins must verify an
+actual Int of at least `1` before emitting presentation metadata. Missing,
+wrong-typed, or older values require legacy `createContent` output: exactly
+`actionId`, `actionLabel`, `enabled`, and `actionArgsJson`. This handshake uses
+the existing Bundle; it does not alter AIDL/parcel layouts.
 
 JSON text is limited to 2048 UTF-8 bytes. Decoded arguments follow Bundle limits:
 at most 64 keys, keys at most 64 characters, string values at most 2048 UTF-8 bytes.
@@ -69,9 +99,39 @@ val refresh = MainUiCardParcel(
 )
 ```
 
+The original `createContent(actionId, actionLabel, enabled, args)` API,
+including its Kotlin default-argument JVM entry point, is unchanged.
+Use the new helper for presentation:
+
+```kotlin
+val bloodhound = MainUiCardParcel(
+    cardType = MainUiCardTypes.ACTION,
+    cardId = "incident-bloodhound",
+    title = "Bloodhound",
+    content = MainUiActionContract.createPresentedContent(
+        actionId = "takcad.bloodhound",
+        actionLabel = "Bloodhound incident",
+        actionPresentation = MainUiActionContract.ICON,
+        actionIcon = MainUiActionContract.BLOODHOUND,
+        actionGroup = "incident-actions",
+        showTitle = false,
+        args = mapOf("incidentId" to incidentId),
+    ),
+)
+val backContent = MainUiActionContract.createPresentedContent(
+    actionId = "takcad.back",
+    actionLabel = "Back",
+    actionPresentation = MainUiActionContract.ICON,
+    actionIcon = MainUiActionContract.BACK,
+    actionPlacement = MainUiActionContract.HEADER_END,
+    showTitle = false,
+)
+```
+
 `MainUiActionContract.parseContent(content)` returns a typed `Action` through
 `ContractValidationResult`; invalid shapes produce explicit issues. Hosts must
-render `actionLabel`, honor `enabled`, and only on an explicit enabled-button tap
+render text or icon presentation, honor title visibility and `enabled`, and
+only on an explicit enabled-button tap
 call `invokeMainUiAction(action.actionId, action.args)` on that plugin's Binder.
 Rendering or refreshing schemas must never dispatch actions. No intents or
 activity launches are part of this contract. Plugins must validate supported

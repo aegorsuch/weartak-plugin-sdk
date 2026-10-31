@@ -150,6 +150,7 @@ object MainUiSchemaContractValidator {
             issues += ContractIssue("cards", "Too many cards")
         }
         val ids = mutableSetOf<String>()
+        var headerEndCount = 0
         for (card in schema.cards) {
             if (card.cardId.isBlank()) issues += ContractIssue("cardId", "Blank cardId")
             if (!ids.add(card.cardId)) issues += ContractIssue("cardId", "Duplicate ${card.cardId}")
@@ -161,13 +162,18 @@ object MainUiSchemaContractValidator {
             if (t == MainUiCardTypes.ACTION) {
                 when (val result = MainUiActionContract.parseContent(card.content)) {
                     is ContractValidationResult.Err -> issues += result.issues
-                    is ContractValidationResult.Ok -> Unit
+                    is ContractValidationResult.Ok -> {
+                        if (result.value.actionPlacement == MainUiActionContract.HEADER_END) headerEndCount++
+                    }
                 }
             }
             when (BundleContractValidator.validateContentBundle(card.content)) {
                 is ContractValidationResult.Ok -> Unit
                 is ContractValidationResult.Err -> issues += ContractIssue("content", "Invalid card content")
             }
+        }
+        if (headerEndCount > 1) {
+            issues += ContractIssue(MainUiActionContract.ACTION_PLACEMENT, "At most one HEADER_END action per schema")
         }
         val sanitized = sanitize(schema)
         return if (issues.isEmpty()) ContractValidationResult.Ok(sanitized) else ContractValidationResult.Err(issues)
