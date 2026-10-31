@@ -9,3 +9,7 @@
 -keep class com.weartak.plugin.sdk.mopp.model.** implements android.os.Parcelable {
     public static final ** CREATOR;
 }
+-keep class com.weartak.plugin.sdk.routestatus.aidl.** { *; }
+-keep class com.weartak.plugin.sdk.routestatus.model.** implements android.os.Parcelable {
+    public static final ** CREATOR;
+}

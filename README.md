@@ -21,6 +21,7 @@ The generated AARs are in `build/outputs/aar/`. The WearTAK plugin template cons
 - v1: base lifecycle, settings, UI, and host control.
 - v2: plugin-to-host event families.
 - v3: capability-negotiated host-to-plugin PCM streaming using bounded Binder batches.
+- Optional extensions negotiated through `PluginInitParcel.hostExtras`: MOPP/PPE control v1 and plugin route status v1.
 
 The v3 initializer is appended to the base AIDL surface so existing v1/v2 Binder transaction IDs remain unchanged. PCM subscriptions are idempotent, carry the original host chunk sequence and timestamps, and use the fixed WearTAK capture format advertised by `HostCapabilitiesV3Parcel`.
 
@@ -293,3 +294,56 @@ source-build CI path for **both** variants. Record source SHA, successful Forge
 pipeline, task invocation and SHA-256 for each local AAR input. Local hashes
 identify those exact files, not a promise of byte-identical cross-platform
 builds. This extension does not enable unsigned AAR job downloads or releases.
+
+## Optional plugin route status v1
+
+`com.weartak.plugin.sdk.routestatus.aidl.IPluginRouteStatusControlV1` lets a
+plugin that provides a network route/transport (for example a Meshtastic
+radio link) push live connection status to the host, for display in Network
+Preferences and the home connection-status indicator. It is an independent,
+host-implemented synchronous Binder extension: no existing AIDL method,
+transaction order, API version, capability parcel, or parcel layout changes.
+
+An implementing host puts Boolean `true` under
+`RouteStatusContract.EXTRA_CAPABILITY` (`"routeStatusV1"`) and the control's
+Binder under `RouteStatusContract.EXTRA_CONTROL` (`"routeStatusControlV1"`) in
+the existing `PluginInitParcel.hostExtras`. Both are required. Older hosts omit
+them; older plugins ignore them.
+
+| Call | Meaning |
+| --- | --- |
+| `getContractVersion()` | Returns `RouteStatusContract.CONTRACT_VERSION` (`1`). |
+| `reportRouteStatus(status)` | Upsert one route keyed by authorized calling plugin plus `routeId`. |
+| `removeRoute(routeId)` | Remove one route the plugin no longer provides. |
+| `clearRoutes()` | Remove every route reported by the calling plugin. |
+
+`PluginRouteStatusParcel` fields: `routeId` (stable, `[A-Za-z0-9._-]{1,64}`),
+`label` (nonblank display name, max 64 UTF-8 bytes), `state`
+(`RouteConnectionState`: `UNKNOWN=0`, `DISCONNECTED=1`, `CONNECTING=2`,
+`CONNECTED=3`, `ERROR=4`), optional `statusText` (max 128 bytes), `sequence`
+(monotonic per binding) and `changedAtEpochMillis`. Plugins never send their
+plugin id; the host derives it from the calling UID and active binding.
+
+Results use `RouteStatusResultCode`: `OK=0`, `INVALID_REQUEST=1`,
+`UNAUTHORIZED=2`, `INACTIVE_SESSION=3`, `LIMIT_EXCEEDED=4`,
+`STALE_SEQUENCE=5`, `UNKNOWN_ROUTE=6`. `UNAVAILABLE=-1` is client-only for a
+missing capability, dead Binder, or transport failure and is never an
+acknowledgement.
+
+Plugins use `PluginRouteStatusReporter.fromInit(init)`; `null` means the host
+does not support route status. The reporter assigns sequence/time, validates
+locally, and maps transport failures to `UNAVAILABLE`. After every
+(re)initialization the plugin must report all its current routes.
+
+Host implementation obligations:
+
+- Authorize the calling UID against the currently active plugin binding on
+  every call; prefer one control instance per binding.
+- Validate with `RouteStatusValidator` and store the sanitized value. Display
+  unrecognized future state values as `UNKNOWN`, never as connected.
+- Drop updates whose `sequence` is not newer than the stored route
+  (`STALE_SEQUENCE`). Enforce `MAX_ROUTES_PER_PLUGIN` (8).
+- Start each binding with no routes for that plugin, and remove its routes when
+  the binding ends, the Binder dies, or the plugin is disabled. Never retain a
+  stale `CONNECTED` state.
+- Do not block Binder threads; hand updates to host state observers.
