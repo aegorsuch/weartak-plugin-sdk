@@ -453,8 +453,13 @@ Host implementation obligations:
 
 ## License
 
-No license file, license declaration, or source copyright/license notice was
-found in this canonical revision. The SDK's existing license terms therefore
-cannot be verified from this repository; obtain clarification from the project
-owner before redistribution. This README reformat does not grant a license or
-change licensing terms.
+The user's original code in this repository is licensed under the GNU General
+Public License, version 3 or (at your option) any later version
+(`GPL-3.0-or-later`). See [LICENSE](LICENSE) for the complete GPL version 3 text.
+
+This declaration covers only the user's original code, not third-party
+components, which retain their own licenses and copyright notices. In
+particular, the Gradle wrapper launchers (`gradlew` and `gradlew.bat`) retain
+their Apache License 2.0 notices. Bundled Gradle tooling and external
+dependencies remain subject to their respective upstream terms. Existing
+attributions and rights notices are preserved.
