@@ -1,8 +1,49 @@
 # WearTAK Plugin SDK
 
+## Purpose and Capabilities
+
 Standalone Android library for the WearTAK plugin contracts, AIDL interfaces, parcelables, and validation helpers. The source is the `weartak-plugin-sdk` module from `PluginTemplate/`.
 
-## Requirements
+## Status
+
+The repository contains v1/v2/v3 contracts and optional Binder extensions.
+Forge CI is configured for unit tests, lint, and AAR assembly; this is not a
+claim that a particular revision has passed CI or is approved for deployment.
+GitHub rolling-release publishing is disabled, and no downloadable SDK release
+endpoint is configured. Consumers must build a pinned canonical source revision.
+See [Forge CI and rolling-release status](#forge-ci-and-rolling-release-status)
+for publishing prerequisites and limitations.
+
+## Point of Contacts
+
+Maintainer and support contacts are not documented in this repository.
+
+## Ports Required
+
+No required network ports are documented for the SDK library itself. Its plugin
+contracts use Android Binder/AIDL. Host and plugin transport requirements must
+be established for each deployment; the SDK does not define those network ports.
+Build dependency repositories and credential routing are documented under
+[Reproducible consumer CI](#reproducible-consumer-ci).
+
+## Equipment Required
+
+Building requires a development machine with JDK 17 and Android SDK API 34.
+Android Studio is optional; the Gradle wrapper supports command-line builds.
+Running consumers requires a compatible WearTAK host and plugin environment;
+specific required hardware is not documented here.
+
+## Equipment Supported
+
+The Android library declares minimum SDK API 30 and compile SDK API 34 in
+`build.gradle.kts`. These settings do not establish device certification or
+host compatibility. Supported watch models and a tested hardware matrix are not
+documented. Consumers must honor the contract-version and capability negotiation
+requirements below.
+
+## Compilation
+
+### Requirements
 
 - JDK 17
 - Android SDK with API 34
@@ -16,7 +57,9 @@ Open this directory as the project root in Android Studio, or build from the com
 
 The generated AARs are in `build/outputs/aar/`. The WearTAK plugin template consumes `weartak-plugin-sdk-debug.aar` and `weartak-plugin-sdk-release.aar` from its `app/libs/` directory. Copy the matching build artifact there when updating that template.
 
-## Contract versions
+## Developer Notes
+
+### Contract versions
 
 - v1: base lifecycle, settings, UI, and host control.
 - v2: plugin-to-host event families.
@@ -29,7 +72,7 @@ The v3 sources match upstream `WEARTAK-261` commit
 `8f08374b69ed0dd0cfbffc22487a2e016a9abf72`. Consumers requiring v3 must not use
 older SDK main-branch artifacts that omit this API.
 
-## Hosted main UI actions
+### Hosted main UI actions
 
 Plugins advertise `PluginCapabilitiesParcel.hostedMainUi` and return cards from
 `IWearTakPlugin.getMainUiSchema()`. Keep feature UI inside its host plugin page;
@@ -207,7 +250,7 @@ download endpoint. A consumer using downloaded AARs instead must supply a real
 published artifact URL and verified SHA-256 for each variant. Uncommitted SDK
 changes cannot be acquired from a pinned remote revision.
 
-## Signing
+### Signing
 
 An Android library cannot use the plugin template's APK `signingConfigs`. The optional `signDebugAar` and `signReleaseAar` tasks use the same keystore values to JAR-sign the outer AAR. They create `*-signed.aar` beside the standard AAR; ordinary builds do not need signing credentials.
 
@@ -229,7 +272,7 @@ jarsigner -verify build/outputs/aar/weartak-plugin-sdk-release-signed.aar
 
 A JAR signature on an AAR can be verified as an archive signature. Android does not use it as an APK install signature; plugins still need the template's APK signing when packaged.
 
-## Forge CI and rolling-release status
+### Forge CI and rolling-release status
 
 `.gitlab-ci.yml` runs on branch pushes, merge requests, and manually started
 branch pipelines. Push pipelines are suppressed when an open merge request
@@ -278,7 +321,7 @@ Until these prerequisites are established, there is no release job, GitHub
 write operation, or downloadable SDK release endpoint. Consumers must continue
 using the pinned-source build procedure above.
 
-## Optional MOPP/PPE control v1
+### Optional MOPP/PPE control v1
 
 `com.weartak.plugin.sdk.mopp.aidl.IMoppPpeControlV1` is an independent,
 host-implemented synchronous Binder extension. No existing AIDL method,
@@ -355,7 +398,7 @@ pipeline, task invocation and SHA-256 for each local AAR input. Local hashes
 identify those exact files, not a promise of byte-identical cross-platform
 builds. This extension does not enable unsigned AAR job downloads or releases.
 
-## Optional plugin route status v1
+### Optional plugin route status v1
 
 `com.weartak.plugin.sdk.routestatus.aidl.IPluginRouteStatusControlV1` lets a
 plugin that provides a network route/transport (for example a Meshtastic
@@ -407,3 +450,11 @@ Host implementation obligations:
   the binding ends, the Binder dies, or the plugin is disabled. Never retain a
   stale `CONNECTED` state.
 - Do not block Binder threads; hand updates to host state observers.
+
+## License
+
+No license file, license declaration, or source copyright/license notice was
+found in this canonical revision. The SDK's existing license terms therefore
+cannot be verified from this repository; obtain clarification from the project
+owner before redistribution. This README reformat does not grant a license or
+change licensing terms.
