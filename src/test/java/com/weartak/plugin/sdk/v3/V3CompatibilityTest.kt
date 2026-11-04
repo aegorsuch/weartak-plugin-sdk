@@ -2,6 +2,8 @@ package com.weartak.plugin.sdk.v3
 
 import com.weartak.plugin.sdk.v3.aidl.IWearTakPcmCallback
 import com.weartak.plugin.sdk.v3.aidl.IWearTakPluginHostControlV3
+import com.weartak.plugin.sdk.nearbyimport.aidl.IWearTakPkcs12ImportControlV1
+import com.weartak.plugin.sdk.nearbyimport.model.Pkcs12ImportCapabilityParcel
 import com.weartak.plugin.sdk.v3.binder.PcmHostControlSupport
 import com.weartak.plugin.sdk.v3.model.HostCapabilitiesV3Parcel
 import com.weartak.plugin.sdk.v3.model.PcmSubscriptionRequestParcel
@@ -50,5 +52,12 @@ class V3CompatibilityTest {
                 contractApiVersion = version,
                 pcmStreaming = enabled,
             )
+
+            override fun getPkcs12ImportCapability() = Pkcs12ImportCapabilityParcel()
+
+            override fun getPkcs12ImportControlV1(): IWearTakPkcs12ImportControlV1? = null
+            override fun getServerPackageCapability(): com.weartak.plugin.sdk.serverpackage.model.ServerPackageCapabilityParcel =
+                com.weartak.plugin.sdk.serverpackage.model.ServerPackageCapabilityParcel()
+            override fun getServerPackageControlV1(): com.weartak.plugin.sdk.serverpackage.aidl.IWearTakServerPackageControlV1? = null
         }
 }
