@@ -540,6 +540,12 @@ The user's original code in this repository is licensed under the GNU General
 Public License, version 3 or (at your option) any later version
 (`GPL-3.0-or-later`). See [LICENSE](LICENSE) for the complete GPL version 3 text.
 
+For Covered Work as defined in the
+[additional permission](LICENSE-ADDITIONAL-PERMISSION.md), the copyright holder
+grants the narrow GPL version 3, section 7 permission stated there for the
+identified Google Play services components. This permission does not apply to
+material for which the copyright holder lacks authority.
+
 This declaration covers only the user's original code, not third-party
 components, which retain their own licenses and copyright notices. In
 particular, the Gradle wrapper launchers (`gradlew` and `gradlew.bat`) retain
