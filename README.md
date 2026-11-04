@@ -64,6 +64,8 @@ The generated AARs are in `build/outputs/aar/`. The WearTAK plugin template cons
 - v1: base lifecycle, settings, UI, and host control.
 - v2: plugin-to-host event families.
 - v3: capability-negotiated host-to-plugin PCM streaming using bounded Binder batches.
+- Optional v1 PKCS#12 staging capability on the v3 host control; versioned independently.
+- Optional v1 typed server package capability (receive + host-owned export) on the v3 host control.
 - Optional extensions negotiated through `PluginInitParcel.hostExtras`: MOPP/PPE control v1 and plugin route status v1.
 
 The v3 initializer is appended to the base AIDL surface so existing v1/v2 Binder transaction IDs remain unchanged. PCM subscriptions are idempotent, carry the original host chunk sequence and timestamps, and use the fixed WearTAK capture format advertised by `HostCapabilitiesV3Parcel`.
@@ -71,6 +73,87 @@ The v3 initializer is appended to the base AIDL surface so existing v1/v2 Binder
 The v3 sources match upstream `WEARTAK-261` commit
 `8f08374b69ed0dd0cfbffc22487a2e016a9abf72`. Consumers requiring v3 must not use
 older SDK main-branch artifacts that omit this API.
+
+### Optional PKCS#12 staging v1
+
+`IWearTakPluginHostControlV3.getPkcs12ImportCapability()` advertises key
+`com.weartak.plugin.sdk.pkcs12-stage`, API version `1`, payload limit (at most
+32,700 bytes), stage lifetime (at most five minutes), and an endpoint obtained
+with `getPkcs12ImportControlV1()`. Missing/unknown capability or old-host
+transaction is unavailable; callers must not attempt the extension without an
+exact supported key and version.
+
+`IWearTakPkcs12ImportControlV1` exposes `stagePkcs12`, `requestReview`,
+`getStatus`, and `cancel`. Stage accepts only PKCS#12 bytes plus a per-attempt
+request ID; it never accepts a password or destination. `STAGED` confirms host
+admission only. Only a separate wearer action may call `requestReview`; the host
+owns password entry, certificate/identity/destination inspection, and final
+explicit trust/save confirmation. There is deliberately no plugin apply method.
+Status distinguishes `STAGED`, `REVIEW_PENDING`, `IN_REVIEW`, `REJECTED`,
+`CANCELLED`, `EXPIRED`, and `APPLIED`; receipt or review request is never proof
+that trust was applied.
+
+All Binder methods are synchronous and have no callback thread. Call them off
+the UI thread; `requestReview` must enqueue/launch host-owned UI and return
+without waiting for wearer input. Host validates UID/package and active
+authenticated session on every call, binds opaque one-use handles to that
+origin, enforces replay/expiry checks, and wipes staged bytes/password on every
+terminal state or caller/session death. Neither status nor logs may expose
+credentials, private keys, or imported material. SDK `stage` wipes the supplied
+byte array only after a structurally valid `STAGED` receipt; rejection and
+transport exceptions preserve it. A transport exception leaves stage outcome unknown, so callers
+must not automatically retry with a new request ID. Handles are opaque 128-bit
+base64url tokens (22 characters); expiry uses device monotonic
+`SystemClock.elapsedRealtime()` milliseconds. Calls are synchronous Binder
+transactions: they have no SDK timeout or callback. Binder death surfaces as
+`RemoteException`; callers must treat timeout/transport failure as an unknown
+stage outcome, and use the known handle to query or cancel after a failed review
+request.
+
+### Optional server package v1
+
+`IWearTakPluginHostControlV3.getServerPackageCapability()` advertises key
+`com.weartak.plugin.sdk.server-package-stage`, API version `1`,
+`maxPackageBytes` (at most 32,700, one Nearby frame), stage/export lifetimes
+(at most five minutes), and `supportsReceive`/`supportsExport`; the endpoint
+comes from `getServerPackageControlV1()`. Absent, unknown, or old-host results
+are unsupported.
+
+`ServerPackageCodec` (`encode`, `decode`, `validate`) is the single canonical
+`ServerPackageV1` format used by plugin and host: `"WTSP"`, version byte `1`,
+then `u8 tag | u16 big-endian length | value` records. Tags 1..7 are required
+once, in order: name (UTF-8 1..128 bytes, no controls/format chars or outer
+whitespace), host (lowercase DNS name, IPv4 or bracketless IPv6 literal, at most
+253 chars; no scheme/port/path/userinfo/query), CoT port (u16 1..65535,
+typically 8089), protocol (u8 `1`=TLS only; no TCP/plaintext downgrade), trust
+mode (`1` public CA, no certificates; `2` private CA), identity mode (`1`
+receiver enrollment with a fresh key on fixed port 8446, `2` admin PKCS#12 staged
+separately through PKCS#12 v1, `3` shared event identity), and sensitive flags
+(bit 0 client identity, bit 1 shared credentials). Tag 8 holds 0..4 distinct
+DER X.509 CA certificates (each at most 8 KiB, basic constraints CA). Optional
+tags then follow, strictly ascending: 9 client PKCS#12, 10 its password, 11
+username, 12 password. Flags must exactly match present pairs; identity `3`
+requires bit 0, other modes forbid it. Unknown/duplicate/out-of-order tags,
+trailing data, settings over 1 KiB, and totals over 32,700 bytes are rejected.
+`ServerPackage` byte fields are owner-held and wiped by `wipe()`.
+
+Sender export: an explicit foreground tap calls `requestExport(requestId)`;
+`PENDING` only means the host picker is open. The host chooses one configured
+server and shows a separate opt-in for each sensitive item. It refuses
+non-exportable, managed, or oversized material, and it never exports device UID,
+callsign, or device-specific settings. `getExportStatus` reports `PENDING`,
+`READY`, `TAKEN`, `CANCELLED`, `EXPIRED`, or `REJECTED` with
+`ServerPackageExportReason`. `takeExport` releases bytes once. `cancelExport`
+wipes them.
+
+Receiver: `stageServerPackage` shares the PKCS#12 v1 stage, review, status, and
+cancel lifecycle. `APPLIED` means the host saved the configuration after
+explicit wearer confirmation. `ENROLLED`, `CONNECTED`, and `NETWORK_FAILED`
+report later network outcomes separately. There is no plugin apply method.
+Sensitive fields have no independent app-layer encryption in v1: they rely on the
+Nearby Connections UKEY2-encrypted connection plus mutual code confirmation and
+receiver acceptance, with memory-only handling. Never log, persist, or display
+secret values.
 
 ### Hosted main UI actions
 
